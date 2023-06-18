@@ -5,8 +5,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 public class SimpleMenu extends Application {
@@ -15,6 +17,7 @@ public class SimpleMenu extends Application {
     private Menu fileMenu;
     private Menu textMenu;
     private MenuItem exitItem;
+    private MenuItem openItem;
     private RadioMenuItem blackItem;
     private RadioMenuItem redItem;
     private RadioMenuItem greenItem;
@@ -22,15 +25,20 @@ public class SimpleMenu extends Application {
     private CheckMenuItem visibleItem;
     private Label outputLabel;
 
+    private FileChooser fileChooser;
+
     @Override
     public void start(Stage stage) throws IOException {
 
         // Constant for the scene dimensions
         final double WIDTH = 300.0, HEIGHT = 200.0;
 
+        // FileChooser get instantiated.
+        fileChooser = new FileChooser();
+
         // Create the Label control.
         outputLabel = new Label("Hello World");
-        outputLabel.setFont(new Font("Arial", 100));
+        outputLabel.setFont(new Font("Arial", 14));
 
         // Create the menu bar.
         MenuBar menuBar = new MenuBar();
@@ -62,6 +70,20 @@ public class SimpleMenu extends Application {
         // Create the File Menu object.
         fileMenu = new Menu("_File");
 
+        // Create the Open Menu Item object.
+        openItem = new MenuItem("_Open...");
+
+        // Register an event handler for the Open Item.
+        openItem.setOnAction(event ->
+        {
+            File selectedFile = fileChooser.showOpenDialog(stage);
+            if(selectedFile != null)
+            {
+                String filename = selectedFile.getPath();
+                outputLabel.setText("You selected " + filename);
+            }
+        });
+
         // Create the Exit MenuItem object.
         exitItem = new MenuItem("E_xit");
 
@@ -71,7 +93,10 @@ public class SimpleMenu extends Application {
             stage.close();
         });
 
-        // Add the Exit item to the File menu.
+        // Add the Open,Seperator, and the Exit menu items to the File menu.
+
+        fileMenu.getItems().add(openItem);
+        fileMenu.getItems().add(new SeparatorMenuItem());
         fileMenu.getItems().add(exitItem);
     }
 
